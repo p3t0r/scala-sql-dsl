@@ -31,8 +31,6 @@ The spec contains various examples on how to write queries. But basically you st
 * Import all functions/implicits in the QueryBuilder object: import QueryBuilder._
 * Import the AnsiSqlRenderer object: AnsiSqlRenderer._
 
-And you can write queries like:
-
 h2. Author
 
 Written by Peter Maas
