@@ -16,7 +16,7 @@ object AnsiSqlRenderer {
 
   def expandOperation(q:Query):String = q.operation match {
     case Select(fields) => "select %s".format(fields.mkString(","))
-    case _ => "<< unknown operation >>"
+    case _ => throw new IllegalArgumentException("Operation %s not implemented".format(q.operation))
   }
 
   def expandFrom(q: Query) = "from %s".format(q.from.table)
@@ -29,7 +29,7 @@ object AnsiSqlRenderer {
     case in:In => "%s in (%s)".format(in.field, in.values.map(quote(_)).mkString(","))
     case and:And => and.clauses.map(expandClause(_)).mkString("(", " and ", ")")
     case or:Or => or.clauses.map(expandClause(_)).mkString("(", " or ", ")")
-    case _ => "<< unknown clause >>"
+    case _ => throw new IllegalArgumentException("Clause %s not implemented".format(clause))
   }
 
   def expandOrder(q: Query) = q.order match {
