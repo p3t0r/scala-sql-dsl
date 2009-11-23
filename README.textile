@@ -11,6 +11,14 @@ Implemented:
 * order
 * A 'renderer' to create a SQL String from the given Query object
 
+Scala SQL DSL lets you write stuff like:
+
+<pre>
+scala> val q = select ("*") from ("user") where (("name","peter") and (("active", true) or ("role", "admin")))
+scala> q.sql
+res0: java.lang.String = select * from user where (name = 'peter' and (active = true or role = 'admin'))
+</pre>
+
 h2. Prerequisites
 
 * buildr 1.4.0
@@ -24,12 +32,6 @@ The spec contains various examples on how to write queries. But basically you st
 * Import the AnsiSqlRenderer object: AnsiSqlRenderer._
 
 And you can write queries like:
-
-<pre>
-scala> val q = select ("*") from ("user") where (("name","peter") and (("active", true) or ("role", "admin")))
-scala> q.sql
-res0: java.lang.String = select * from user where (name = 'peter' and (active = true or role = 'admin'))
-</pre>
 
 h2. Author
 
