@@ -1,0 +1,56 @@
+h1. Scala SQL DSL
+
+h2. Scala implementation of a really small subset of the SQL language
+
+To understand how to write internal DSLs in Scala I started implementing a small subset of the SQL language.
+
+Implemented:
+
+* select operation with fields
+* where clause with (typed) equals, in, and, or
+* order
+* A 'renderer' to create a SQL String from the given Query object
+
+h2. Prerequisites
+
+* buildr 1.4.0
+* scala 2.8.0.r19281-b20091026023411 (should work with more recent versions as well)
+
+h2. Usage
+
+The spec contains various examples on how to write queries. But basically you start by:
+
+* Import all functions/implicits in the QueryBuilder object: import QueryBuilder._
+* Import the AnsiSqlRenderer object: AnsiSqlRenderer._
+
+And you can write queries like:
+
+<pre>
+scala> val q = select ("*") from ("user") where (("name","peter") and (("active", true) or ("role", "admin")))
+scala> q.sql
+res0: java.lang.String = select * from user where (name = 'peter' and (active = true or role = 'admin'))
+</pre>
+
+h2. Author
+
+Written by Peter Maas
+
+* http://www.twitter.com/p3t0r
+* http://log4p.com
+
+h1. License
+
+<pre>
+This software is licensed under the Apache 2 license, quoted below.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
