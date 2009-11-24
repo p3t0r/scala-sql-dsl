@@ -5,22 +5,24 @@ case class SQL(val sql:String)
 object AnsiSqlRenderer {
   implicit def query2sql(q:Query):SQL = SQL(sql(q))
 
-  def sql(q: Query): String = {
+  def sql(query: Query): String = {
     List(
-      expandOperation(q),
-      expandFrom(q),
-      expandWhere(q),
-      expandOrder(q)
+      expandOperation(query),
+      expandFrom(query),
+      expandWhere(query),
+      expandOrder(query)
     ).mkString(" ").trim
   }
 
-  def expandOperation(q:Query):String = q.operation match {
+  def expandOperation(query:Query):String = query.operation match {
     case Select(fields) => "select %s".format(fields.mkString(","))
-    case _ => throw new IllegalArgumentException("Operation %s not implemented".format(q.operation))
+    case _ => throw new IllegalArgumentException("Operation %s not implemented".format(query.operation))
   }
 
-  def expandFrom(q: Query) = "from %s".format(q.from.table)
-  def expandWhere(q: Query) = "where %s".format(q.where.clauses.map(expandClause(_)).mkString(" "))
+  def expandFrom(query: Query) = "from %s".format(query.from.table)
+  def expandWhere(query: Query) = {
+    "where %s".format(query.where.clauses.map(expandClause(_)).mkString(" "))
+  }
 
   def expandClause(clause: Clause): String = clause match {
     case StringEquals(field, value) => "%s = %s".format(field, quote(value))
@@ -32,7 +34,7 @@ object AnsiSqlRenderer {
     case _ => throw new IllegalArgumentException("Clause %s not implemented".format(clause))
   }
 
-  def expandOrder(q: Query) = q.order match {
+  def expandOrder(query: Query) = query.order match {
     case Some(direction) => direction match {
       case Asc(field) => "order by %s asc".format(field)
       case Desc(field) => "order by %s desc".format(field)
