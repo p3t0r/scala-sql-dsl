@@ -19,7 +19,6 @@ object AnsiSqlRenderer {
       case s:String => s 
     })
     .mkString(" ")
-    .trim
   }
 
   def expandOperation(query:Query):String = query.operation match {
