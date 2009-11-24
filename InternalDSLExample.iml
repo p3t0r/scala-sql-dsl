@@ -15,7 +15,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="scala-2.8" level="application" />
+    <orderEntry type="library" exported="" name="scala-2.8" level="project" />
+    <orderEntry type="library" name="ScalaTest" level="application" />
   </component>
 </module>
 

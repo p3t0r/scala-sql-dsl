@@ -4,6 +4,7 @@ case class SQL(val sql:String)
 
 object AnsiSqlRenderer {
   implicit def query2sql(q:Query):SQL = SQL(sql(q))
+  implicit def from2sql(f: From): SQL = SQL(sql(Query(f.operation, f, Where())))
 
   def sql(query: Query): String = {
     List(
@@ -21,7 +22,10 @@ object AnsiSqlRenderer {
 
   def expandFrom(query: Query) = "from %s".format(query.from.table)
   def expandWhere(query: Query) = {
-    "where %s".format(query.where.clauses.map(expandClause(_)).mkString(" "))
+    if (query.where.clauses.isEmpty)
+      ""
+    else
+      "where %s".format(query.where.clauses.map(expandClause(_)).mkString(" "))
   }
 
   def expandClause(clause: Clause): String = clause match {

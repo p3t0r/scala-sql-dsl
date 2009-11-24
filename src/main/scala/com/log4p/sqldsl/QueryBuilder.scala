@@ -1,7 +1,7 @@
 package com.log4p.sqldsl
 
 case class Query(val operation:Operation, val from: From, val where: Where, val order: Option[Direction] = None) {
-  def order(dir: Direction) = this.copy(order = Option(dir))
+  def order(dir: Direction): Query = this.copy(order = Option(dir))
 }
 
 abstract class Operation {
@@ -35,8 +35,14 @@ object QueryBuilder {
   implicit def tuple2field(t: (String, String)): StringEquals = StringEquals(t._1, t._2)
   implicit def tuple2field(t: (String, Int)): NumberEquals = NumberEquals(t._1, t._2)
   implicit def tuple2field(t: (String, Boolean)): BooleanEquals = BooleanEquals(t._1, t._2)
+  implicit def from2query(f: From): Query = Query(f.operation, f, Where())
 
   /** entrypoint for starting a select query */
   def select(fields:String*) = Select(fields:_*)
+  def select(symbol: Symbol): Select = symbol match {
+    case 'all => select("*")
+    case _ => throw new RuntimeException("Only 'all allowed as symbol")
+  }
+
   def in(field: String, values: String*) = In(field, values: _*)
 }
