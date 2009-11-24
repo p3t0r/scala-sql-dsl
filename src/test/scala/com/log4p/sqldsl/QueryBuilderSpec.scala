@@ -69,7 +69,7 @@ class QueryBuilderSpec extends Spec with ShouldMatchers {
       val q = select ('all) from ("user") order Asc("name")
 
       it("should select and order all rows without filter") {
-        q.sql should be ("select * from user  order by name asc")
+        q.sql should be ("select * from user order by name asc")
       }
     }
     describe("(when specified with lots less parentheses)") {
