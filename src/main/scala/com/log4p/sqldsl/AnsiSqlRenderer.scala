@@ -12,7 +12,14 @@ object AnsiSqlRenderer {
       expandFrom(query),
       expandWhere(query),
       expandOrder(query)
-    ).mkString(" ").trim
+    )
+    .filter(_ != None)
+    .map(_ match {
+      case Some(s) => s
+      case s:String => s 
+    })
+    .mkString(" ")
+    .trim
   }
 
   def expandOperation(query:Query):String = query.operation match {
@@ -21,11 +28,11 @@ object AnsiSqlRenderer {
   }
 
   def expandFrom(query: Query) = "from %s".format(query.from.table)
-  def expandWhere(query: Query) = {
+  def expandWhere(query: Query):Option[String] = {
     if (query.where.clauses.isEmpty)
-      ""
+      None
     else
-      "where %s".format(query.where.clauses.map(expandClause(_)).mkString(" "))
+      Option("where %s".format(query.where.clauses.map(expandClause(_)).mkString(" ")))
   }
 
   def expandClause(clause: Clause): String = clause match {
@@ -38,12 +45,12 @@ object AnsiSqlRenderer {
     case _ => throw new IllegalArgumentException("Clause %s not implemented".format(clause))
   }
 
-  def expandOrder(query: Query) = query.order match {
+  def expandOrder(query: Query):Option[String] = query.order match {
     case Some(direction) => direction match {
-      case Asc(field) => "order by %s asc".format(field)
-      case Desc(field) => "order by %s desc".format(field)
+      case Asc(field) => Option("order by %s asc".format(field))
+      case Desc(field) => Option("order by %s desc".format(field))
     }
-    case None => ""
+    case None => None
   }
 
   def quote(value: String) = "'%s'".format(escape(value))
