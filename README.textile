@@ -2,7 +2,7 @@ h1. Scala SQL DSL
 
 h2. Scala implementation of a really small subset of the SQL language
 
-To understand how to write internal DSLs in Scala I started implementing a small subset of the SQL language.
+To understand how to write DSLs (internal/external) in Scala I started implementing a small subset of the SQL language. 
 
 Implemented:
 
@@ -17,6 +17,15 @@ Scala SQL DSL lets you write stuff like:
 scala> val q = select ("*") from ("user") where (("name","peter") and (("active", true) or ("role", "admin")))
 scala> q.sql
 res0: java.lang.String = select * from user where (name = 'peter' and (active = true or role = 'admin'))
+</pre>
+
+Or using the parser:
+
+<pre>
+scala> val sql = """select name,age from users where name = "peter" and (active = true or age = 30)"""
+scala> val query = p.parse(sql).get
+scala> AnsiSqlRenderer.sql(query)
+res0: java.lang.String = select name,age from users where (name = 'peter' and (active = true or age = 30))
 </pre>
 
 h2. Prerequisites
