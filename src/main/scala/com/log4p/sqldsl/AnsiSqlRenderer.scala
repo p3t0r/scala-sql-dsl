@@ -4,7 +4,7 @@ case class SQL(val sql:String)
 
 object AnsiSqlRenderer {
   implicit def query2sql(q:Query):SQL = SQL(sql(q))
-  implicit def from2sql(f: From): SQL = SQL(sql(Query(f.operation, f, Where())))
+  implicit def from2sql(f: From): SQL = SQL(sql(Query(f.operation.get, f, None)))
 
   def sql(query: Query): String = {
     List(
@@ -22,16 +22,17 @@ object AnsiSqlRenderer {
   }
 
   def expandOperation(query:Query):String = query.operation match {
-    case Select(fields) => "select %s".format(fields.mkString(","))
+    case Select(field:String) => "select %s".format(field)
+    case s:Select => "select %s".format(s.fields.mkString(","))    
     case _ => throw new IllegalArgumentException("Operation %s not implemented".format(query.operation))
   }
 
   def expandFrom(query: Query) = "from %s".format(query.from.table)
   def expandWhere(query: Query):Option[String] = {
-    if (query.where.clauses.isEmpty)
+    if (query.where.isEmpty || query.where.get.clauses.isEmpty)
       None
     else
-      Option("where %s".format(query.where.clauses.map(expandClause(_)).mkString(" ")))
+      Option("where %s".format(query.where.get.clauses.map(expandClause(_)).mkString(" ")))
   }
 
   def expandClause(clause: Clause): String = clause match {
@@ -39,8 +40,8 @@ object AnsiSqlRenderer {
     case BooleanEquals(field, value) => "%s = %s".format(field, value)
     case NumberEquals(field, value) => "%s = %s".format(field, value)
     case in:In => "%s in (%s)".format(in.field, in.values.map(quote(_)).mkString(","))
-    case and:And => and.clauses.map(expandClause(_)).mkString("(", " and ", ")")
-    case or:Or => or.clauses.map(expandClause(_)).mkString("(", " or ", ")")
+    case and:And => "(%s and %s)".format(expandClause(and.lClause), expandClause(and.rClause))
+    case or:Or => "(%s or %s)".format(expandClause(or.lClause), expandClause(or.rClause))
     case _ => throw new IllegalArgumentException("Clause %s not implemented".format(clause))
   }
 
