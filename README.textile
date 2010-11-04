@@ -14,17 +14,17 @@ Implemented:
 Scala SQL DSL lets you write stuff like:
 
 <pre>
-scala> val q = select ("*") from ("user") where (("name","peter") and (("active", true) or ("role", "admin")))
-scala> q.sql
+%{color:blue}scala>% val q = select ("*") from ("user") where (("name","peter") and (("active", true) or ("role", "admin")))
+%{color:blue}scala>% q.sql
 res0: java.lang.String = select * from user where (name = 'peter' and (active = true or role = 'admin'))
 </pre>
 
 Or using the parser:
 
 <pre>
-scala> val sql = """select name,age from users where name = "peter" and (active = true or age = 30)"""
-scala> val query = p.parse(sql).get
-scala> AnsiSqlRenderer.sql(query)
+%{color:blue}scala>% val sql = """select name,age from users where name = "peter" and (active = true or age = 30)"""
+%{color:blue}scala>% val query = p.parse(sql).get
+%{color:blue}scala>% AnsiSqlRenderer.sql(query)
 res0: java.lang.String = select name,age from users where (name = 'peter' and (active = true or age = 30))
 </pre>
 
