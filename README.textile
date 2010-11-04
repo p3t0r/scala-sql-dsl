@@ -28,10 +28,10 @@ scala> AnsiSqlRenderer.sql(query)
 res0: java.lang.String = select name,age from users where (name = 'peter' and (active = true or age = 30))
 </pre>
 
-h2. Prerequisites
+h2. Prerequisites for building / running tests
 
-* buildr 1.4.0
-* scala 2.8.0.r19281-b20091026023411 (should work with more recent versions as well)
+* maven2
+* maven uses the maven-scala-test plugin of which I have a for here: http://github.com/p3t0r/maven-scalatest-plugin/ for running the specs
 
 h2. Usage
 
